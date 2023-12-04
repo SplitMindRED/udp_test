@@ -15,11 +15,13 @@ int main()
     return 1;
   }
 
+  // Bind the socket to a specific address and port
   struct sockaddr_in serverAddr;
   memset(&serverAddr, 0, sizeof(serverAddr));
   serverAddr.sin_family = AF_INET;
   serverAddr.sin_port = htons(12345);                  // Use the same port as the server
   serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1"); // Server IP address
+  // serverAddr.sin_addr.s_addr = inet_addr("192.168.123.13"); // Server IP address
 
   const char* message = "Hello from client!";
   ssize_t messageLength = strlen(message);
@@ -27,19 +29,19 @@ int main()
   // Send the message to the server
   sendto(clientSocket, message, messageLength, 0, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
 
-  // char buffer[1024];
+  char buffer[1024];
 
-  // // Receive the response from the server
-  // ssize_t bytesRead = recvfrom(clientSocket, buffer, sizeof(buffer), 0, NULL, NULL);
-  // if (bytesRead < 0)
-  // {
-  //   perror("Error in recvfrom");
-  // }
-  // else
-  // {
-  //   buffer[bytesRead] = '\0';
-  //   std::cout << "Received from server: " << buffer << std::endl;
-  // }
+  // Receive the response from the server
+  ssize_t bytesRead = recvfrom(clientSocket, buffer, sizeof(buffer), 0, NULL, NULL);
+  if (bytesRead < 0)
+  {
+    perror("Error in recvfrom");
+  }
+  else
+  {
+    buffer[bytesRead] = '\0';
+    std::cout << "Received from server: " << buffer << std::endl;
+  }
 
   // Close the socket
   close(clientSocket);
